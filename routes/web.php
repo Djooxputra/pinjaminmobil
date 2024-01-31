@@ -27,3 +27,5 @@ Route::get('/logout', [AuthC::class, 'logout']);
 Route::get('/car', [CarC::class, 'index']);
 Route::post('/addcar', [CarC::class, 'add']);
 Route::post('/deletecar', [CarC::class, 'delete']);
+
+Route::get('/debug', [RentC::class, 'checkAvailability']);

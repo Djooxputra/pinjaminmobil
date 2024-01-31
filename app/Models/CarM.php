@@ -27,6 +27,6 @@ class CarM extends Model
 
     public function rent()
     {
-        return $this->hasMany(RentM::class);
+        return $this->hasMany(RentM::class, "car_id");
     }
 }

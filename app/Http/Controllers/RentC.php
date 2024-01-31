@@ -19,6 +19,22 @@ class RentC extends Controller
         return view("apps", $x);
     }
 
+    public function checkAvailability(Request $req)
+    {
+        $start = $req->input("sdate");
+        $end = $req->input("edate");
+        $sDate = Carbon::parse($start);
+        $eDate = Carbon::parse($end);
+        $cars = CarM::whereDoesntHave('rent', function ($query) use ($start, $end) {
+            $query->where(function ($q) use ($start, $end) {
+                $q->whereBetween('date_start', [$start, $end])
+                    ->orWhereBetween('date_end', [$start, $end]);
+            });
+        })
+            ->get();
+        return json_encode($cars);
+    }
+
     public function rent(Request $req)
     {
         $validatedData = $req->validate([
@@ -67,14 +83,6 @@ class RentC extends Controller
             return redirect()->back()->withErrors(['message' => 'Mobil Tidak Sedang Disewa']);
         }
         return redirect()->back()->withErrors(['message' => 'Gagal Memlakukan Penyewaan']);
-    }
-
-    public function test()
-    {
-        $sDate = Carbon::parse(date("Y-m-d"))->addDays(-4);
-        $eDate = Carbon::parse(date("Y-m-d"));
-        $diff = $sDate->diffInDays($eDate);
-        return json_encode($diff);
     }
 
     public function delete(Request $req)
